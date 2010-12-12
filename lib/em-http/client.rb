@@ -292,7 +292,7 @@ module EventMachine
           @redirects += 1
 
           # swap current connection and reassign current handler
-          req = HttpOptions.new(@method, @uri, @options)
+          req = EventMachine::HttpOptions.new(@method, @uri, @options)
           reconnect(req.host, req.port)
 
           @response_header = HttpResponseHeader.new

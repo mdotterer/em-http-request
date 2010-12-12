@@ -52,7 +52,7 @@ module EventMachine
     protected
 
     def setup_request(method, options, &blk)
-      @req = HttpOptions.new(method, @uri, options)
+      @req = EventMachine::HttpOptions.new(method, @uri, options)
       send_request(&blk)
     end
 
