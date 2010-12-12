@@ -3,6 +3,7 @@ source :gemcutter
 gem 'eventmachine', '~> 0.12.9'
 gem 'addressable', '~> 2.0.0'
 gem 'escape_utils'
+gem 'http_parser.rb'
 
 
 group :development do
