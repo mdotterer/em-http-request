@@ -487,8 +487,16 @@ module EventMachine
       @state == :finished || (@state == :body && @bytes_remaining.nil?)
     end
 
+    def redirect?
+      begin
+        @last_effective_url != @uri
+      rescue Addressable::URI::InvalidURIError
+        false
+      end
+    end
+
     def unbind
-      if finished? && (@last_effective_url != @uri) && (@redirects < @options[:redirects])
+      if finished? && redirect? && (@redirects < @options[:redirects])
         begin
           # update uri to redirect location if we're allowed to traverse deeper
           @uri = @last_effective_url
