@@ -660,11 +660,16 @@ module EventMachine
         end
       end
 
-      if ''.respond_to?(:force_encoding) && /;\s*charset=\s*(.+?)\s*(;|$)/.match(response_header[CONTENT_TYPE])
+      parse_content_charset if ''.respond_to?(:force_encoding)
+      true
+    end
+
+    def parse_content_charset
+      # handle malformed header - Content-Type repetitions.
+      charset = [response_header[CONTENT_TYPE]].flatten.first
+      if /;\s*charset=\s*(.+?)\s*(;|$)/.match(charset)
         @content_charset = Encoding.find($1.gsub(/^\"|\"$/, '')) rescue Encoding.default_external
       end
-
-      true
     end
 
     def send_socks_connect_request

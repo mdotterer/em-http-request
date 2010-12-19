@@ -699,6 +699,23 @@ describe EventMachine::HttpRequest do
         }
       }
     end
+
+    it "should parse malformed content-type header" do
+      EventMachine.run {
+        content_type = "Content-Type: text/plain; charset=utf-8\nContent-Type: text/html; charset=iso-8859-1"
+        @s = StubServer.new("HTTP/1.0 200 OK\n#{content_type}\nContent-Length: 3\nConnection: close\n\nFoo")
+
+        http = EventMachine::HttpRequest.new('http://127.0.0.1:8081/').get
+        http.errback { failed(http) }
+        http.callback {
+          http.response_header.status.should == 200
+          http.content_charset.should        == Encoding::UTF_8
+
+          @s.stop
+          EventMachine.stop
+        }
+      }
+    end
   end
 
   context "body content-type encoding" do
